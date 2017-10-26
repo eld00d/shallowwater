@@ -299,29 +299,34 @@ class WalledLinearShallowWater(WallBoundaries, LinearShallowWater): pass
 
 
 if __name__ == '__main__':
-    nx = 128
-    ny = 129
+#    nx = 256
+#    ny = 257
+    nx = 512
+    ny = 513
     beta=2.0e-11
     Lx = 1.0e7
     Ly = 1.0e7
 
-    ocean = PeriodicLinearShallowWater(nx, ny, Lx, Ly, beta=beta, f0=0.0, g=0.1, H=100.0, dt=3000, nu=1000.0)
+#    ocean = PeriodicLinearShallowWater(nx, ny, Lx, Ly, beta=beta, f0=0.0, g=0.1, H=100.0, dt=3000, nu=1000.0)
+    ocean = WalledLinearShallowWater(nx, ny, Lx, Ly, beta=beta, f0=0.0, g=0.1, H=100.0, dt=3000, nu=1000.0)
+#    ocean = LinearShallowWater(nx, ny, Lx, Ly, beta=beta, f0=0.0, g=0.1, H=100.0, dt=3000, nu=1000.0)
     #ocean.h[10:20, 60:80] = 1.0
     #ocean.h[-20:-10] = 1.0
     d = 25
-    ocean.h[10:10+2*d, ny//2-d:ny//2+d] = (np.sin(np.linspace(0, np.pi, 2*d))**2)[np.newaxis, :] * (np.sin(np.linspace(0, np.pi, 2*d))**2)[:, np.newaxis]
+    #ocean.h[10:10+2*d, ny//2-d:ny//2+d] = (np.sin(np.linspace(0, np.pi, 2*d))**2)[np.newaxis, :] * (np.sin(np.linspace(0, np.pi, 2*d))**2)[:, np.newaxis]
+    ocean.h[50:55,50:55] = 10
     #ocean.h[100:100+2*d, ny//2-d:ny//2+d] = (np.sin(np.linspace(0, np.pi, 2*d))**2)[np.newaxis, :] * (np.sin(np.linspace(0, np.pi, 2*d))**2)[:, np.newaxis]
     import matplotlib.pyplot as plt
 
-    ocean.add_tracer('q', initial_state=1.0, damping=0.0)
+    #ocean.add_tracer('q', initial_state=1.0, damping=1.0)
 
-    @ocean.add_forcing
-    def heating(model):
-        dstate = np.zeros_like(model.state)
-        dstate[2] = np.zeros_like(model.h)
-        dstate[2][10:10+2*d, ny//2-d:ny//2+d] = (np.sin(np.linspace(0, np.pi, 2*d))**2)[np.newaxis, :] * (np.sin(np.linspace(0, np.pi, 2*d))**2)[:, np.newaxis] * 1e-6
-        dstate[2] -= model.h / 1e7
-        return dstate
+    #@ocean.add_forcing
+    #def heating(model):
+        #dstate = np.zeros_like(model.state)
+        #dstate[2] = np.zeros_like(model.h)
+        #dstate[2][10:10+2*d, ny//2-d:ny//2+d] = (np.sin(np.linspace(0, np.pi, 2*d))**2)[np.newaxis, :] * (np.sin(np.linspace(0, np.pi, 2*d))**2)[:, np.newaxis] * 1e-6
+        #dstate[2] -= model.h / 1e7
+        #return dstate
 
     plt.ion()
 
@@ -340,29 +345,31 @@ if __name__ == '__main__':
             #plt.plot(ocean.h[:,0])
             #plt.plot(ocean.h[:,64])
             #plt.ylim(-1,1)
-            plt.contourf(ocean.h.T, cmap=plt.cm.RdBu, levels=colorlevels)
+            #plt.imshow(ocean.h.T, cmap=plt.cm.RdBu,interpolation='spline36',clim=(0,1))
+            plt.imshow(ocean.h.T,interpolation='nearest',clim=(0,1))
+            plt.colorbar()
 
-            plt.figure(2)
-            plt.clf()
-            plt.plot(ocean.h[:,0])
-            plt.plot(ocean.h[:,48])
-            plt.plot(ocean.h[:,64])
-            plt.ylim(-1,1)
-
-            plt.figure(3)
-            plt.clf()
-            energy = np.sum(ocean.g*ocean.h) + np.sum(ocean.u**2) + np.sum(ocean.v**2)
-            ts.append(ocean.t)
-            es.append(energy)
-            plt.plot(ts, es)
-
-            plt.figure(4)
-            plt.clf()
+            #plt.figure(2)
+            #plt.clf()
             #plt.plot(ocean.h[:,0])
+            #plt.plot(ocean.h[:,48])
             #plt.plot(ocean.h[:,64])
             #plt.ylim(-1,1)
-            plt.imshow(ocean.q.T, cmap=plt.cm.RdBu)
-            plt.colorbar()
+
+            #plt.figure(3)
+            #plt.clf()
+            #energy = np.sum(ocean.g*ocean.h) + np.sum(ocean.u**2) + np.sum(ocean.v**2)
+            #ts.append(ocean.t)
+            #es.append(energy)
+            #plt.plot(ts, es)
+
+            #plt.figure(4)
+            #plt.clf()
+            ##plt.plot(ocean.h[:,0])
+            ##plt.plot(ocean.h[:,64])
+            ##plt.ylim(-1,1)
+            #plt.imshow(ocean.q.T, cmap=plt.cm.RdBu, clim=(.99,1.01),interpolation='spline36')
+            #plt.colorbar()
 
             plt.pause(0.01)
             plt.draw()

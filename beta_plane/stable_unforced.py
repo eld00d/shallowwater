@@ -2,7 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy.signal
 
-from nonlinear import PeriodicShallowWater
+#from nonlinear import PeriodicShallowWater
+from example_nonlinear import PeriodicShallowWater
 from spectral_analysis import kiladis_spectra, background
 
 nx = 128
@@ -19,9 +20,9 @@ ocean.phi[:] += phi0
 #ocean.phi[:] += (np.random.random((nx, ny)) - 0.5)*phi0*0.05
 
 d = 25
-hump = (np.sin(np.linspace(0, np.pi, 2*d))**2)[np.newaxis, :] * (np.sin(np.linspace(0, np.pi, 2*d))**2)[:, np.newaxis]
+#hump = (np.sin(np.linspace(0, np.pi, 2*d))**2)[np.newaxis, :] * (np.sin(np.linspace(0, np.pi, 2*d))**2)[:, np.newaxis]
 
-ocean.phi[nx//2-d:nx//2+d, ny//2-d:ny//2+d] += hump*3.0
+#ocean.phi[nx//2-d:nx//2+d, ny//2-d:ny//2+d] += hump*3.0
 #ocean.phi[nx//4-d:nx//4+d, ny//2-d:ny//2+d] += -hump*5.0
 initial_phi = ocean.phi.copy()
 
